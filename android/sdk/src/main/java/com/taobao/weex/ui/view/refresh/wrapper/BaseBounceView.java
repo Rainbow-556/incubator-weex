@@ -136,6 +136,11 @@ public abstract class BaseBounceView<T extends View> extends FrameLayout {
                     refreshView.setRefreshView(refresh.getHostView());
                 }
             }
+            //add by owenli 20170801解决多个list/scroll refresh 不展示bug  start
+            else {
+                swipeLayout.setRefreshComponent(refresh);
+            }
+            //add by owenli 20170801解决多个list/scroll refresh 不展示bug  end
         }
     }
 
@@ -200,24 +205,24 @@ public abstract class BaseBounceView<T extends View> extends FrameLayout {
             swipeLayout.setPullLoadEnable(enable);
     }
 
-  @Override
-  public void removeView(View view) {
-    if (view instanceof WXLoadingLayout) {
-      finishPullLoad();
-      setLoadmoreEnable(false);
-      if (swipeLayout != null) {
-        swipeLayout.removeView(swipeLayout.getFooterView());
-      }
-    } else if (view instanceof WXRefreshLayout) {
-      finishPullRefresh();
-      setRefreshEnable(false);
-      if (swipeLayout != null) {
-        swipeLayout.removeView(swipeLayout.getHeaderView());
-      }
-    } else {
-      super.removeView(view);
+    @Override
+    public void removeView(View view) {
+        if (view instanceof WXLoadingLayout) {
+            finishPullLoad();
+            setLoadmoreEnable(false);
+            if (swipeLayout != null) {
+                swipeLayout.removeView(swipeLayout.getFooterView());
+            }
+        } else if (view instanceof WXRefreshLayout) {
+            finishPullRefresh();
+            setRefreshEnable(false);
+            if (swipeLayout != null) {
+                swipeLayout.removeView(swipeLayout.getHeaderView());
+            }
+        } else {
+            super.removeView(view);
+        }
     }
-  }
 
     public WXSwipeLayout getSwipeLayout() {
         return swipeLayout;
