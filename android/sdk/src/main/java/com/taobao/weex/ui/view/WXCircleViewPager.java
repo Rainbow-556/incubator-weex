@@ -224,7 +224,13 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
         }
         break;
     }
-    return super.dispatchTouchEvent(ev);
+    //add by owenli 20171108 解决滚动异常  start
+    try{
+      return super.dispatchTouchEvent(ev);
+    } catch (Exception e){
+      return true;
+    }
+    //add by owenli 20171108 解决滚动异常  end
   }
 
   public void destory() {

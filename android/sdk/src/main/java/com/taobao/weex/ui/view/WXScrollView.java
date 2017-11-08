@@ -230,8 +230,14 @@ public class WXScrollView extends ScrollView implements Callback, IWXScroller,
       ox = ev.getX();
       oy = ev.getY();
     }
-
-    boolean result = super.onTouchEvent(ev);
+    boolean result;
+    //add by owenli 20171108 解决滚动异常  start
+    try {
+       result = super.onTouchEvent(ev);
+    }catch (Exception e){
+       result = true;
+    }
+    //add by owenli 20171108 解决滚动异常  end
     if (wxGesture != null) {
       result |= wxGesture.onTouch(this, ev);
     }

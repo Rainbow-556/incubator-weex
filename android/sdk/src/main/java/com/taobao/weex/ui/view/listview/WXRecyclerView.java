@@ -89,7 +89,14 @@ public class WXRecyclerView extends RecyclerView implements WXGestureObservable 
     if(!scrollable) {
       return true;
     }
-    boolean result = super.onTouchEvent(event);
+    boolean result;
+    //add by owenli 20171108 解决滚动异常  start
+    try{
+      result = super.onTouchEvent(event);
+    } catch (Exception e){
+      return true;
+    }
+    //add by owenli 20171108 解决滚动异常  end
     if (mGesture != null) {
       result |= mGesture.onTouch(this, event);
     }
