@@ -27,10 +27,8 @@ import android.os.Build;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -38,27 +36,11 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 
-import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.ImmutableDomObject;
-import com.taobao.weex.ui.component.WXComponent;
-import com.taobao.weex.utils.WXResourceUtils;
-import com.taobao.weex.utils.WXUtils;
-
 public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent {
 
   private NestedScrollingParentHelper parentHelper;
   private WXOnRefreshListener onRefreshListener;
   private WXOnLoadingListener onLoadingListener;
-
-  //add by owenli 20170801解决多个list/scroll refresh 不展示bug  start
-  public WXComponent getRefreshComponent() {
-    return mRefresh;
-  }
-
-  public void setRefreshComponent(WXComponent mRefresh) {
-    this.mRefresh = mRefresh;
-  }
-  //add by owenli 20170801解决多个list/scroll refresh 不展示bug  end
 
   /**
    * On refresh Callback, call on start refresh
@@ -134,10 +116,6 @@ public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent 
   private int mProgressBgColor;
   private int mProgressColor;
 
-  //add by owenli 20170801解决多个list/scroll refresh 不展示bug  start
-  private WXComponent mRefresh;
-  //add by owenli 20170801解决多个list/scroll refresh 不展示bug  end
-
   public WXSwipeLayout(Context context) {
     super(context);
     initAttrs(context, null);
@@ -198,9 +176,6 @@ public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent 
    * Init refresh view or loading view
    */
   private void setRefreshView() {
-    //add by owenli 20170801解决多个list/scroll refresh 不展示bug  start
-    if(headerView != null) return;
-    //add by owenli 20170801解决多个list/scroll refresh 不展示bug  end
     // SetUp HeaderView
     FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 0);
     headerView = new WXRefreshView(getContext());
@@ -210,7 +185,6 @@ public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent 
     headerView.setProgressColor(mProgressColor);
     headerView.setContentGravity(Gravity.BOTTOM);
     addView(headerView, lp);
-    setHeader(headerView);
 
     // SetUp FooterView
     lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 0);
@@ -223,30 +197,6 @@ public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent 
     footerView.setContentGravity(Gravity.TOP);
     addView(footerView, lp);
   }
-
-
-  //add by owenli 20170801解决多个list/scroll refresh 不展示bug  start
-  private void setHeader(WXRefreshView refreshView){
-    if(mRefresh==null)
-      return;
-    ImmutableDomObject immutableDomObject = mRefresh.getDomObject();
-    if (immutableDomObject != null) {
-      int refreshHeight = (int) immutableDomObject.getLayoutHeight();
-      setRefreshHeight(refreshHeight);
-      String colorStr = (String) immutableDomObject.getStyles().get(Constants.Name.BACKGROUND_COLOR);
-      String bgColor = WXUtils.getString(colorStr, null);
-      if (bgColor != null) {
-        if (!TextUtils.isEmpty(bgColor)) {
-          int colorInt = WXResourceUtils.getColor(bgColor);
-          if (!(colorInt == Color.TRANSPARENT)) {
-            setRefreshBgColor(colorInt);
-          }
-        }
-      }
-      refreshView.setRefreshView(mRefresh.getHostView());
-    }
-  }
-  //add by owenli 20170801解决多个list/scroll refresh 不展示bug  end
 
   @Override
   public boolean onInterceptTouchEvent(MotionEvent ev) {

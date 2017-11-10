@@ -136,11 +136,6 @@ public abstract class BaseBounceView<T extends View> extends FrameLayout {
                     refreshView.setRefreshView(refresh.getHostView());
                 }
             }
-            //add by owenli 20170801解决多个list/scroll refresh 不展示bug  start
-            else {
-                swipeLayout.setRefreshComponent(refresh);
-            }
-            //add by owenli 20170801解决多个list/scroll refresh 不展示bug  end
         }
     }
 
