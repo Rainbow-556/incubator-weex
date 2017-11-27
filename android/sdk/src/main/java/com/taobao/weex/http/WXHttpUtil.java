@@ -20,6 +20,7 @@ package com.taobao.weex.http;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.taobao.weex.common.WXConfig;
 import com.taobao.weex.utils.WXViewUtils;
@@ -37,30 +38,33 @@ public class WXHttpUtil {
 
   public static String assembleUserAgent(Context ctx,Map<String, String> config) {
     if (TextUtils.isEmpty(sDefautUA)) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(config.get(WXConfig.sysModel))
-          .append("(Android/")
-          .append(config.get(WXConfig.sysVersion))
-          .append(")")
-          .append(" ")
+//      StringBuilder builder = new StringBuilder();
+//      builder.append(config.get(WXConfig.sysModel))
+//          .append("(Android/")
+//          .append(config.get(WXConfig.sysVersion))
+//          .append(")")
+//          .append(" ")
+//
+//          .append(TextUtils.isEmpty(config.get(WXConfig.appGroup)) ? "" : config.get(WXConfig.appGroup))
+//          .append("(")
+//          .append(TextUtils.isEmpty(config.get(WXConfig.appName)) ? "" : config.get(WXConfig.appName))
+//          .append("/")
+//          .append(config.get(WXConfig.appVersion))
+//          .append(")")
+//          .append(" ")
+//
+//          .append("Weex/")
+//          .append(config.get(WXConfig.weexVersion))
+//          .append(" ")
+//
+//          .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : config.get(WXConfig.externalUserAgent))
+//          .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : " ")
+//
+//          .append(WXViewUtils.getScreenWidth(ctx) + "x" + WXViewUtils.getScreenHeight(ctx));
+//
+//      sDefautUA = builder.toString();
 
-          .append(TextUtils.isEmpty(config.get(WXConfig.appGroup)) ? "" : config.get(WXConfig.appGroup))
-          .append("(")
-          .append(TextUtils.isEmpty(config.get(WXConfig.appName)) ? "" : config.get(WXConfig.appName))
-          .append("/")
-          .append(config.get(WXConfig.appVersion))
-          .append(")")
-          .append(" ")
-
-          .append("Weex/")
-          .append(config.get(WXConfig.weexVersion))
-          .append(" ")
-
-          .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : config.get(WXConfig.externalUserAgent))
-          .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : " ")
-
-          .append(WXViewUtils.getScreenWidth(ctx) + "x" + WXViewUtils.getScreenHeight(ctx));
-      sDefautUA = builder.toString();
+      sDefautUA = String.format("Fenqile/%s (%s; Android %s;)", config.get(WXConfig.fqlNetworkVersion), config.get(WXConfig.sysModel), config.get(WXConfig.sysVersion));
     }
     return sDefautUA;
   }
