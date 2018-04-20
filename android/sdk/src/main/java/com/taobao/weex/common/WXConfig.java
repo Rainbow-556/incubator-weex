@@ -34,4 +34,5 @@ public interface WXConfig {
   String logLevel="logLevel";
   String scale = "scale";
   String fqlNetworkVersion = "fqlNetworkVersion";
+  String debugMode = "debugMode";
 }

@@ -160,7 +160,11 @@ public class WXScrollView extends ScrollView implements Callback, IWXScroller,
       mCurrentStickyView.getLocationOnScreen(stickyViewP);
       ev.offsetLocation(0, stickyViewP[1] - mScrollRect.top);
     }
-    return super.dispatchTouchEvent(ev);
+    boolean result = super.dispatchTouchEvent(ev);
+    if (wxGesture != null) {
+      result |= wxGesture.onTouch(this, ev);
+    }
+    return result;
   }
 
   @Override
@@ -230,18 +234,12 @@ public class WXScrollView extends ScrollView implements Callback, IWXScroller,
       ox = ev.getX();
       oy = ev.getY();
     }
-    boolean result;
-    //add by owenli 20171108 解决滚动异常  start
+
     try {
-       result = super.onTouchEvent(ev);
+      return super.onTouchEvent(ev);
     }catch (Exception e){
-       result = true;
+      return true;
     }
-    //add by owenli 20171108 解决滚动异常  end
-    if (wxGesture != null) {
-      result |= wxGesture.onTouch(this, ev);
-    }
-    return result;
   }
 
   @Override
