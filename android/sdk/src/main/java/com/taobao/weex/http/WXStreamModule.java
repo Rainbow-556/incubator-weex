@@ -179,7 +179,7 @@ public class WXStreamModule extends WXModule {
               );
               try {
                 resp.put("data", parseData(respData, options.getType()));
-              } catch (JSONException exception) {
+              } catch (Throwable exception) {
                 WXLogUtils.e("", exception);
                 resp.put("ok", false);
                 resp.put("data","{'err':'Data parse failed!'}");
