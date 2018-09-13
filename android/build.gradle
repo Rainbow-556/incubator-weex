@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         mavenLocal()
@@ -36,13 +35,20 @@ subprojects {
         }
     }
     ext {
-        compileSdkVersion=25
-        buildToolsVersion="25.0.3"
-        minSdkVersion=14
-        appMinSdkVersion=15
-        targetSdkVersion=25
-        supportLibVersion="25.3.1"
-        fastjsonLibVersion="1.1.46.android"
+        compileSdkVersion = 25
+        buildToolsVersion = "25.0.3"
+        minSdkVersion = 14
+        appMinSdkVersion = 15
+        targetSdkVersion = 25
+        supportLibVersion = "25.3.1"
+        fastjsonLibVersion = "1.1.46.android"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'http://nexus.fenqile.cn/nexus/content/groups/public/' }
     }
 }
 

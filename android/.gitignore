@@ -6,3 +6,6 @@ build
 captures
 .settings
 .project
+mvn.properties
+mvn-push.gradle
+./gradle.properties

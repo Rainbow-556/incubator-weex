@@ -180,3 +180,5 @@ if(file('../license/LICENSE').exists()){
     }
     preBuild.dependsOn licenseFormat
 }
+
+apply from: '../mvn-push.gradle'
