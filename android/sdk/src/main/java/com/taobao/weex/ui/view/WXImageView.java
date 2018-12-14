@@ -20,8 +20,10 @@ package com.taobao.weex.ui.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -146,6 +148,13 @@ public class WXImageView extends ImageView implements WXGestureObservable,
         } else {
           WXLogUtils.w("WXImageView", "Bitmap on " + drawable.toString() + " is null");
         }
+      } else if (drawable instanceof TransitionDrawable){
+        TransitionDrawable transitionDrawable = (TransitionDrawable)drawable;
+        Rect rect = transitionDrawable.getBounds();
+        int width = rect.right - rect.left;
+        if(width > 0) {
+            return width;
+        }
       } else {
         WXLogUtils.w("WXImageView", "Not supported drawable type: " + drawable.getClass().getSimpleName());
       }
@@ -165,6 +174,13 @@ public class WXImageView extends ImageView implements WXGestureObservable,
           return bitmap.getHeight();
         } else {
           WXLogUtils.w("WXImageView", "Bitmap on " + drawable.toString() + " is null");
+        }
+      } else if (drawable instanceof TransitionDrawable){
+        TransitionDrawable transitionDrawable = (TransitionDrawable)drawable;
+        Rect rect = transitionDrawable.getBounds();
+        int height = rect.bottom - rect.top;
+        if(height > 0) {
+            return height;
         }
       } else {
         WXLogUtils.w("WXImageView", "Not supported drawable type: " + drawable.getClass().getSimpleName());
