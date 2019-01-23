@@ -3,6 +3,7 @@
 local.properties
 *iml
 build
+buildCacheDir
 captures
 .settings
 .project

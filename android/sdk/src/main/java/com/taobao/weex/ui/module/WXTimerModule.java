@@ -73,7 +73,7 @@ public class WXTimerModule extends WXModule implements Destroyable, Handler.Call
       WXSDKManager.getInstance().postOnUiThread(new Runnable() {
           @Override
           public void run() {
-            if (null != mWXSDKInstance){
+            if (null != mWXSDKInstance && mWXSDKInstance.getWXPerformance() != null){
               mWXSDKInstance.getWXPerformance().timerInvokeCount++;
             }
           }
