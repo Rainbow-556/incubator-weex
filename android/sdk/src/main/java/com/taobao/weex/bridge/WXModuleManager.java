@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -31,13 +31,12 @@ import com.taobao.weex.common.Destroyable;
 import com.taobao.weex.common.WXErrorCode;
 import com.taobao.weex.common.WXException;
 import com.taobao.weex.common.WXModule;
-import com.taobao.weex.dom.DOMAction;
-import com.taobao.weex.dom.WXDomModule;
-import com.taobao.weex.dom.action.Actions;
 import com.taobao.weex.ui.config.ConfigModuleFactory;
+import com.taobao.weex.ui.module.WXDomModule;
 import com.taobao.weex.ui.module.WXTimerModule;
 import com.taobao.weex.utils.WXExceptionUtils;
 import com.taobao.weex.utils.WXLogUtils;
+import com.taobao.weex.utils.cache.RegisterCache;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -61,18 +60,66 @@ public class WXModuleManager {
   private static Map<String, WXModule> sGlobalModuleMap = new HashMap<>();
   private static Map<String, WXDomModule> sDomModuleMap = new HashMap<>();
 
-  /**
-   * monitor keys
-   */
-  private static String MONITOR_ERROR_CODE = "errCode";
-  private static String MONITOR_ARG = "arg";
-  private static String MONITOR_ERROR_MSG = "errMsg";
 
   /**
    * module object dictionary
    * K : instanceId, V : Modules
    */
   private static Map<String, Map<String, WXModule>> sInstanceModuleMap = new ConcurrentHashMap<>();
+
+
+  public static boolean registerModule(Map<String, RegisterCache.ModuleCache> moduleCacheMap) {
+    if (moduleCacheMap.isEmpty())
+      return true;
+
+    final Iterator<Entry<String, RegisterCache.ModuleCache>> iterator = moduleCacheMap.entrySet().iterator();
+    WXBridgeManager.getInstance()
+            .post(new Runnable() {
+              @Override
+              public void run() {
+                Map<String, Object> modules = new HashMap<>();
+
+                while (iterator.hasNext()) {
+                  Entry<String, RegisterCache.ModuleCache> next = iterator.next();
+                  RegisterCache.ModuleCache value = next.getValue();
+                  String moduleName = value.name;
+                  if (TextUtils.equals(moduleName, WXDomModule.WXDOM)) {
+                    WXLogUtils.e("Cannot registered module with name 'dom'.");
+                    continue;
+                  }
+
+                  if (sModuleFactoryMap != null && sModuleFactoryMap.containsKey(moduleName)) {
+                    WXLogUtils.w("WXComponentRegistry Duplicate the Module name: " + moduleName);
+                  }
+                  ModuleFactory factory = value.factory;
+                  try {
+                    registerNativeModule(moduleName, factory);
+                  } catch (WXException e) {
+                    WXLogUtils.e("registerNativeModule" + e);
+                  }
+
+                  if (value.global) {
+                    try {
+                      WXModule wxModule = factory.buildInstance();
+                      wxModule.setModuleName(moduleName);
+                      sGlobalModuleMap.put(moduleName, wxModule);
+                    } catch (Exception e) {
+                      WXLogUtils.e(moduleName + " class must have a default constructor without params. ", e);
+                    }
+                  }
+
+                  try {
+                    sModuleFactoryMap.put(moduleName, new ModuleFactoryImpl(factory));
+                  } catch (Throwable e) {
+
+                  }
+                  modules.put(moduleName, factory.getMethods());
+                }
+                WXSDKManager.getInstance().registerModules(modules);
+              }
+            });
+    return true;
+  }
 
   /**
    * Register module to JavaScript and Android
@@ -82,15 +129,13 @@ public class WXModuleManager {
       return false;
     }
 
-    if (TextUtils.equals(moduleName, WXDomModule.WXDOM)) {
+    if (TextUtils.equals(moduleName,WXDomModule.WXDOM)) {
       WXLogUtils.e("Cannot registered module with name 'dom'.");
       return false;
     }
 
-    try {
-      sModuleFactoryMap.put(moduleName, new ModuleFactoryImpl(factory));
-    } catch (Throwable e) {
-
+    if(RegisterCache.getInstance().cacheModule(moduleName,factory,global)) {
+      return true;
     }
 
     //execute task in js thread to make sure register order is same as the order invoke register method.
@@ -118,9 +163,16 @@ public class WXModuleManager {
                 }
 
                 registerJSModule(moduleName, factory);
+
+                try {
+                  sModuleFactoryMap.put(moduleName, new ModuleFactoryImpl(factory));
+                } catch (Throwable e) {
+
+                }
               }
             });
     return true;
+
   }
 
   static boolean registerNativeModule(String moduleName, ModuleFactory factory) throws WXException {
@@ -169,9 +221,9 @@ public class WXModuleManager {
         IWXUserTrackAdapter userTrackAdapter = WXSDKManager.getInstance().getIWXUserTrackAdapter();
         if(userTrackAdapter != null) {
           HashMap<String, Serializable> data = new HashMap<String, Serializable>();
-          data.put(MONITOR_ERROR_CODE, "101");
-          data.put(MONITOR_ARG, moduleStr + "." + methodStr);
-          data.put(MONITOR_ERROR_MSG, instance.getBundleUrl());
+          data.put(IWXUserTrackAdapter.MONITOR_ERROR_CODE, "101");
+          data.put(IWXUserTrackAdapter.MONITOR_ARG, moduleStr + "." + methodStr);
+          data.put(IWXUserTrackAdapter.MONITOR_ERROR_MSG, instance.getBundleUrl());
           userTrackAdapter.commit(instance.getContext(), null, IWXUserTrackAdapter.INVOKE_MODULE, null, data);
         }
         return dispatchCallModuleMethod(instance,wxModule,args,invoker);
@@ -180,14 +232,7 @@ public class WXModuleManager {
         return null;
       }
     } catch (Exception e) {
-	  WXExceptionUtils.commitCriticalExceptionRT(instanceId,
-			  WXErrorCode.WX_KEY_EXCEPTION_INVOKE_REGISTER_CONTENT_FAILED,
-			  "callModuleMethod",
-			  WXErrorCode.WX_KEY_EXCEPTION_INVOKE_REGISTER_CONTENT_FAILED.getErrorMsg()
-			  + "callModuleMethod >>> invoke module:" + moduleStr + ", method:" + methodStr + " failed. "
-			  + WXLogUtils.getStackTrace(e),
-			  null);
-	  WXLogUtils.e("callModuleMethod >>> invoke module:" + moduleStr + ", method:" + methodStr + " failed. ", e);
+      WXLogUtils.e("callModuleMethod >>> invoke module:" + moduleStr + ", method:" + methodStr + " failed. ", e);
       return null;
     } finally {
       if (wxModule instanceof WXDomModule || wxModule instanceof WXTimerModule) {
@@ -203,15 +248,17 @@ public class WXModuleManager {
     }
     // we are in preRender mode
     if(invoker.isRunOnUIThread()) {/*ASYNC CALL*/
-      DOMAction moduleInvocationAction = Actions.getModuleInvocationAction(wxModule,args,invoker);
-      WXSDKManager.getInstance().getWXDomManager().postAction(instance.getInstanceId(), moduleInvocationAction,false);
+//      DOMAction moduleInvocationAction = Actions.getModuleInvocationAction(wxModule,args,invoker);
+//      WXSDKManager.getInstance().getWXDomManager().postAction(instance.getInstanceId(), moduleInvocationAction,false);
       return null;
     } else {/*SYNC CALL*/
       return instance.getNativeInvokeHelper().invoke(wxModule,invoker,args);
     }
   }
 
-
+  public static boolean hasModule(String module) {
+    return sGlobalModuleMap.containsKey(module) || sModuleFactoryMap.containsKey(module);
+  }
 
   private static WXModule findModule(String instanceId, String moduleStr,ModuleFactory factory) {
     // find WXModule
@@ -485,5 +532,4 @@ public class WXModuleManager {
       }
     }
   }
-
 }

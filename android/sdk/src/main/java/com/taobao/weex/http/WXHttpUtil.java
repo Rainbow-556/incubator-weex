@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -31,37 +31,37 @@ import java.util.Map;
  */
 public class WXHttpUtil {
 
-  private static String sDefautUA = null;
+  private static String sDefaultUA = null;
 
   public static final String KEY_USER_AGENT = "user-agent";
 
   public static String assembleUserAgent(Context ctx,Map<String, String> config) {
-    if (TextUtils.isEmpty(sDefautUA)) {
+    if (TextUtils.isEmpty(sDefaultUA)) {
       StringBuilder builder = new StringBuilder();
       builder.append(config.get(WXConfig.sysModel))
-              .append("(Android/")
-              .append(config.get(WXConfig.sysVersion))
-              .append(")")
-              .append(" ")
+          .append("(Android/")
+          .append(config.get(WXConfig.sysVersion))
+          .append(")")
+          .append(" ")
 
-              .append(TextUtils.isEmpty(config.get(WXConfig.appGroup)) ? "" : config.get(WXConfig.appGroup))
-              .append("(")
-              .append(TextUtils.isEmpty(config.get(WXConfig.appName)) ? "" : config.get(WXConfig.appName))
-              .append("/")
-              .append(config.get(WXConfig.appVersion))
-              .append(")")
-              .append(" ")
+          .append(TextUtils.isEmpty(config.get(WXConfig.appGroup)) ? "" : config.get(WXConfig.appGroup))
+          .append("(")
+          .append(TextUtils.isEmpty(config.get(WXConfig.appName)) ? "" : config.get(WXConfig.appName))
+          .append("/")
+          .append(config.get(WXConfig.appVersion))
+          .append(")")
+          .append(" ")
 
-              .append("Weex/")
-              .append(config.get(WXConfig.weexVersion))
-              .append(" ")
+          .append("Weex/")
+          .append(config.get(WXConfig.weexVersion))
+          .append(" ")
 
-              .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : config.get(WXConfig.externalUserAgent))
-              .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : " ")
+          .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : config.get(WXConfig.externalUserAgent))
+          .append(TextUtils.isEmpty(config.get(WXConfig.externalUserAgent)) ? "" : " ")
 
-              .append(WXViewUtils.getScreenWidth(ctx) + "x" + WXViewUtils.getScreenHeight(ctx));
-      sDefautUA = builder.toString();
+          .append(WXViewUtils.getScreenWidth(ctx) + "x" + WXViewUtils.getScreenHeight(ctx));
+      sDefaultUA = builder.toString();
     }
-    return sDefautUA;
+    return sDefaultUA;
   }
 }

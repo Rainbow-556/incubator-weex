@@ -33,29 +33,45 @@
 - /src/h5-render/node_modules
 - /src/js-framework/node_modules
 + /src/**
-+ /html5
-- /html5/**.output.js
-- /html5/render/browser/extend/packer.js
-- /html5/test/render/**
-+ /html5/**
++ /runtime
+- /runtime/**.output.js
+- /runtime/render/browser/extend/packer.js
+- /runtime/test/render/**
++ /runtime/**
 + /packages
-+ /packages/weex-html5
-+ /packages/weex-html5/package.json
-+ /packages/weex-vue-render
-+ /packages/weex-vue-render/src/**
-+ /packages/weex-vue-render/package.json
 + /build
 + /build/**
+- /pre-build
+- /pre-build/**
+
+###### weexcore ######
+- /weex_core/Source/.idea
+- /weex_core/Source/cmake-build-debug
+- /weex_core/Source/libs
+- weex_core/Source/CMakeFiles/**
+- weex_core/Source/base/android/jniprebuild/android_jar.classes
+- weex_core/Source/base/android/jniprebuild/jni_files
+- weex_core/Source/base/android/jniprebuild/jni_generator.py
+- weex_core/Source/base/android/jniprebuild/prebuild.sh
++ /weex_core
++ /weex_core/CMakeLists.txt
++ /weex_core/Source
++ /weex_core/Source/**
 
 ###### android #######
 + /android
 + /android/build.gradle
 + /android/sdk/
-- /android/sdk/assets/main.js
+- /android/sdk/assets/*.js
 - /android/sdk/.gradle
 - /android/sdk/build
 - /android/sdk/NOTICE
 - /android/sdk/libs/*/*.so
+- /android/sdk/.externalNativeBuild
+- /android/sdk/.settings
+- /android/sdk/.classpath
+- /android/sdk/.project
+- /android/sdk/weex_sdk.iml
 + /android/sdk/**
 
 ###### ios ###########
@@ -64,6 +80,12 @@
 - /ios/sdk/LICENSE
 - /ios/sdk/NOTICE
 - /ios/sdk/WeexSDK/Resources/main.js
+- ios/sdk/Products
+- /ios/sdk/WeexSDK.xcodeproj/project.xcworkspace/xcuserdata
+- /ios/sdk/WeexSDK.xcodeproj/xcuserdata
+- /ios/sdk/WeexSDKTests/dependency
 + /ios/sdk/**
 
+##### Others #######
++ /RELEASE_NOTE.md
 - *

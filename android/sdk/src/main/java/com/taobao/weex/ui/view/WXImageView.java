@@ -42,8 +42,8 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 public class WXImageView extends ImageView implements WXGestureObservable,
-                                                      IRenderStatus<WXImage>,
-                                                      IRenderResult<WXImage>, WXImage.Measurable {
+        IRenderStatus<WXImage>,
+        IRenderResult<WXImage>, WXImage.Measurable {
 
   private WeakReference<WXImage> mWeakReference;
   private WXGesture wxGesture;
@@ -68,10 +68,10 @@ public class WXImageView extends ImageView implements WXGestureObservable,
     ViewGroup.LayoutParams layoutParams;
     if ((layoutParams = getLayoutParams()) != null) {
       Drawable wrapDrawable = ImageDrawable.createImageDrawable(drawable,
-                                                                getScaleType(), borderRadius,
-                                                                layoutParams.width - getPaddingLeft() - getPaddingRight(),
-                                                                layoutParams.height - getPaddingTop() - getPaddingBottom(),
-                                                                isGif);
+              getScaleType(), borderRadius,
+              layoutParams.width - getPaddingLeft() - getPaddingRight(),
+              layoutParams.height - getPaddingTop() - getPaddingBottom(),
+              isGif);
       if (wrapDrawable instanceof ImageDrawable) {
         ImageDrawable imageDrawable = (ImageDrawable) wrapDrawable;
         if (!Arrays.equals(imageDrawable.getCornerRadii(), borderRadius)) {
@@ -90,7 +90,7 @@ public class WXImageView extends ImageView implements WXGestureObservable,
 
   @Override
   public void setImageDrawable(@Nullable Drawable drawable) {
-    setImageDrawable(drawable, false);
+    setImageDrawable(drawable, gif);
   }
 
   @Override
@@ -101,6 +101,11 @@ public class WXImageView extends ImageView implements WXGestureObservable,
   @Override
   public void registerGestureListener(WXGesture wxGesture) {
     this.wxGesture = wxGesture;
+  }
+
+  @Override
+  public WXGesture getGestureListener() {
+    return wxGesture;
   }
 
   @Override
@@ -202,13 +207,13 @@ public class WXImageView extends ImageView implements WXGestureObservable,
     super.onWindowVisibilityChanged(visibility);
     if(mOutWindowVisibilityChangedReally){
       if(visibility == View.VISIBLE){
-         autoRecoverImage();
+        autoRecoverImage();
       }else{
-         autoReleaseImage();
+        autoReleaseImage();
       }
     }
   }
-  
+
 
   @Override
   protected void onAttachedToWindow() {
@@ -240,19 +245,19 @@ public class WXImageView extends ImageView implements WXGestureObservable,
 
 
   public void setEnableBitmapAutoManage(boolean enableBitmapAutoManage) {
-     this.enableBitmapAutoManage = enableBitmapAutoManage;
+    this.enableBitmapAutoManage = enableBitmapAutoManage;
   }
 
   public void autoReleaseImage(){
-      if(enableBitmapAutoManage) {
-        if (!isBitmapReleased) {
-          isBitmapReleased = true;
-          WXImage image = getComponent();
-          if (image != null) {
-            image.autoReleaseImage();
-          }
+    if(enableBitmapAutoManage) {
+      if (!isBitmapReleased) {
+        isBitmapReleased = true;
+        WXImage image = getComponent();
+        if (image != null) {
+          image.autoReleaseImage();
         }
       }
+    }
   }
 
   public void autoRecoverImage(){
