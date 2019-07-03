@@ -20,9 +20,11 @@
 buildscript {
     repositories {
         mavenLocal()
-        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        // aliyun仓库有些lib无法下载，所以把所有该url全部注释，by glennli 2019.7.3
+//        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         mavenCentral()
         jcenter()
+        maven { url 'http://nexus.fenqile.cn/nexus/content/groups/public/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
@@ -47,7 +49,7 @@ subprojects {
                 url external_repositories
             }
         }
-        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+//        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         mavenCentral()
         jcenter()
         maven {
@@ -75,12 +77,13 @@ subprojects {
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'http://nexus.fenqile.cn/nexus/content/groups/public/' }
-    }
-}
+//allprojects {
+//    repositories {
+//        google()
+//        jcenter()
+//        maven { url 'http://nexus.fenqile.cn/nexus/content/groups/public/' }
+//    }
+//}
 
 //task clean(type: Delete) {
 //    delete rootProject.buildDir

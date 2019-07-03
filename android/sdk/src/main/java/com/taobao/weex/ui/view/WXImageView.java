@@ -153,7 +153,7 @@ public class WXImageView extends ImageView implements WXGestureObservable,
         } else {
           WXLogUtils.w("WXImageView", "Bitmap on " + drawable.toString() + " is null");
         }
-      } else if (drawable instanceof TransitionDrawable){
+      } else if (drawable instanceof TransitionDrawable) {
         TransitionDrawable transitionDrawable = (TransitionDrawable)drawable;
         Rect rect = transitionDrawable.getBounds();
         int width = rect.right - rect.left;
@@ -180,7 +180,7 @@ public class WXImageView extends ImageView implements WXGestureObservable,
         } else {
           WXLogUtils.w("WXImageView", "Bitmap on " + drawable.toString() + " is null");
         }
-      } else if (drawable instanceof TransitionDrawable){
+      } else if (drawable instanceof TransitionDrawable) {
         TransitionDrawable transitionDrawable = (TransitionDrawable)drawable;
         Rect rect = transitionDrawable.getBounds();
         int height = rect.bottom - rect.top;
