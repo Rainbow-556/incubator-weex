@@ -67,7 +67,12 @@ public class RecyclerViewBaseAdapter<T extends ListBaseViewHolder> extends Recyc
   @Override
   public void onBindViewHolder(T viewHolder, int i) {
     if (iRecyclerAdapterListener != null) {
-      iRecyclerAdapterListener.onBindViewHolder(viewHolder, i);
+      // 解决list组件偶现崩溃，https://github.com/apache/incubator-weex/issues/2957，glennli
+      try {
+        iRecyclerAdapterListener.onBindViewHolder(viewHolder, i);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
   }
 
