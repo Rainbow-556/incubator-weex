@@ -399,15 +399,22 @@ public class BoxShadowUtil {
       Rect newRect = new Rect(bounds);
       // Make the Canvas Rect bigger according to the padding.
       newRect.inset(-paddingX * 2, -paddingY * 2);
-      canvas.clipRect(newRect, Region.Op.REPLACE);
-
+      final boolean is9Above = Build.VERSION.SDK_INT >= 28;
+      if (is9Above) {
+        canvas.clipRect(newRect);
+      } else {
+        canvas.clipRect(newRect, Region.Op.REPLACE);
+      }
       Path contentPath = new Path();
       // the content area map must be aligned with bounds
       RectF rectF = new RectF(bounds);
       contentPath.addRoundRect(rectF, radii, Path.Direction.CCW);
       // can not antialias
-      canvas.clipPath(contentPath, Region.Op.DIFFERENCE);
-
+      if (is9Above) {
+        canvas.clipPath(contentPath);
+      } else {
+        canvas.clipPath(contentPath, Region.Op.DIFFERENCE);
+      }
       // translate the canvas to a suitable position and then draw the bitmap, otherwise draw from the origin(0, 0)
       canvas.translate(bounds.left, bounds.top);
 
